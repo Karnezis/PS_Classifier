@@ -112,3 +112,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Exceptions
+model/model_autoamiloidosis.h5
