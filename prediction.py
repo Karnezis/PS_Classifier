@@ -19,18 +19,18 @@ def load_model():
 model = load_model()
 
 
-def read_imagefile(file) -> Image.Image:
+def read_imagefile(file):
     image = Image.open(BytesIO(file))
     return image
 
 
 def preprocess(image: Image.Image):
     # Redimensiona a imagem
-    image = image.resize(224, 224)
+    image = np.asarray(image.resize((299, 299)))[..., :3]
     # Transforma a imagem em array
-    input_arr = np.asfarray(image)
+    #input_arr = np.asfarray(image)
     # Coloca mais uma dimensão no array
-    input_arr = np.expand_dims(input_arr, axis=0)
+    input_arr = np.expand_dims(image, axis=0)
     # Normaliza o array para a rede conforme sua necessidade
     pre_processed_array = tf.keras.applications.resnet50.preprocess_input(
         input_arr)
