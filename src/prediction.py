@@ -8,7 +8,7 @@ import keras
 
 def load_model():
     # Defina aqui o caminho para o modelo a ser carregado
-    model_path = 'model/ResNet50Amiloidosis_5.h5'
+    model_path = 'src/model/ResNet50Amiloidosis_5.h5'
     # Carrega os pesos do modelo para uma variável auxiliar
     load_aux = keras.models.load_model(model_path)
     # Instancia um modelo com os pesos da auxiliar e camada de saída indicada
