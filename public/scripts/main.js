@@ -12,8 +12,8 @@ function sendImage() {
       let formData = new FormData();
       formData.append("file", document.getElementById("img").files[0]);
       let submit = url + "api/predict";
-      let response = await axios.post("http://localhost:8080/images/", formData);
-      await console.log(response);
+      let response = await axios.post("http://localhost:8080/api/predict", formData);
+      await console.log(response.data);
     };
   };
 }

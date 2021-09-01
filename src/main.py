@@ -1,23 +1,17 @@
 from prediction import predict, preprocess, read_imagefile
 from fastapi import FastAPI
 from fastapi import UploadFile, File
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 import uvicorn
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:8000"
-    "http://localhost:8080",
-]
-
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+CORSMiddleware,
+allow_origins=["*"], # Allows all origins
+allow_credentials=True,
+allow_methods=["*"], # Allows all methods
+allow_headers=["*"], # Allows all headers
 )
 
 @app.get('/')
