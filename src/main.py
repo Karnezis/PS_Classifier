@@ -1,4 +1,4 @@
-from prediction import predict, preprocess, read_imagefile
+from prediction import predict_amiloidosis, preprocess_amiloidosis, preprocess_sclerosis, read_imagefile, predict_sclerosis
 from fastapi import FastAPI
 from fastapi import UploadFile, File
 from starlette.middleware.cors import CORSMiddleware
@@ -29,12 +29,20 @@ async def predict_api(file: UploadFile = File(...)):
     if not extension:
         return "Image must be jpg or png format!"
     image = read_imagefile(await file.read())
-    pre_processed_array = preprocess(image)
-    prediction = predict(pre_processed_array)
-    if prediction[0][0] > 0.5:
-        return "Amiloidose."
+    amiloidosis_array = preprocess_amiloidosis(image)
+    amiloidosis_prediction = predict_amiloidosis(amiloidosis_array)
+    sclerosis_array = preprocess_sclerosis(image)
+    sclerosis_prediction = predict_sclerosis(sclerosis_array)
+    if amiloidosis_prediction[0][0] > 0.5:
+        retorno_a = "Amiloidose."
     else:
-        return "Saudável."
+        retorno_a = "Sem amiloidose."
+    if sclerosis_prediction[0][0] > 0.5:
+        retorno_s = "Esclerose."
+    else:
+        retorno_s = "Sem esclerose."
+    retorno = retorno_a + retorno_s
+    return retorno
 
 @app.post("/images/")
 async def create_upload_file(file: UploadFile = File(...)):
