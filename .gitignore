@@ -114,5 +114,4 @@ dmypy.json
 .pyre/
 
 # Exceptions
-model/model_autoamiloidosis.h5
-model/ResNet50Amiloidosis_5.h5
+model/*
