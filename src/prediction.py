@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 import keras
 from keras.models import model_from_json
+from gradcam.visualizer import Visualizer
 
 
 def load_models():
@@ -22,7 +23,8 @@ def load_models():
     sclerosis_model = model_from_json(estrutura_rede)
     sclerosis_model.load_weights('src/model/sclerosis-weights.h5')
     # ------------- Hipercelularidade -----------------------------------------
-    hiper_model = keras.models.load_model('src/model/hiper-bestModel', compile=False)
+    hiper_model = keras.models.load_model(
+        'src/model/hiper-bestModel', compile=False)
     hiper_model.load_weights('src/model/hiper-bestModel')
     return amiloidosis_model, sclerosis_model, hiper_model
 
@@ -45,6 +47,7 @@ def preprocess_amiloidosis(image: Image.Image):
         input_arr)
     return pre_processed_array
 
+
 def preprocess_sclerosis(image: Image.Image):
     # Redimensiona a imagem
     image = np.asarray(image.resize((224, 224)))[..., :3]
@@ -60,7 +63,12 @@ def predict_amiloidosis(processed_array: np.ndarray):
     predicted_rate = amiloidosis_model.predict(processed_array)
     return predicted_rate
 
+
 def predict_sclerosis(processed_array: np.ndarray):
     # Prevê o array com a rede instanciada
     predicted_rate = sclerosis_model.predict(processed_array)
     return predicted_rate
+
+
+def visualizer(self, imagePath, model):
+    return self.gradcam.visualize(imagePath, model, 'middle', self.visLabel, 'CAM_IMAGE_JET', self.visGuided)
