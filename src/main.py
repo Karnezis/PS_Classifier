@@ -1,22 +1,26 @@
 from prediction import predict_amiloidosis, preprocess_amiloidosis, preprocess_sclerosis, read_imagefile, predict_sclerosis
 from fastapi import FastAPI
 from fastapi import UploadFile, File
+from fastapi.responses import FileResponse
 from starlette.middleware.cors import CORSMiddleware
+import io
 import uvicorn
 
 app = FastAPI()
 
 app.add_middleware(
-CORSMiddleware,
-allow_origins=["*"], # Allows all origins
-allow_credentials=True,
-allow_methods=["*"], # Allows all methods
-allow_headers=["*"], # Allows all headers
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
+
 
 @app.get('/')
 async def hello_world():
     return "Hello world!"
+
 
 @app.get('/index')
 async def hello_world(name: str):
@@ -44,9 +48,16 @@ async def predict_api(file: UploadFile = File(...)):
     retorno = retorno_a + retorno_s
     return retorno
 
+
 @app.post("/images/")
 async def create_upload_file(file: UploadFile = File(...)):
     return {"filename": file.filename}
+
+
+@app.post("/return_image")
+def image_endpoint():
+    return FileResponse("public\\assets\\favicon.png")
+
 
 if __name__ == "__main__":
     uvicorn.run(app, port=8080, host='localhost')
