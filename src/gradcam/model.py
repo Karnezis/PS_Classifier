@@ -3,7 +3,7 @@ from keras import backend as K,  regularizers
 from keras.models import load_model as keras_load_model, Sequential
 from keras.layers import Convolution2D, MaxPooling2D, BatchNormalization
 from keras.layers.core import Flatten, Dense, Dropout
-from keras.optimizers import SGD, Adam
+from tensorflow.keras.optimizers import SGD, Adam
 
 
 def global_average_pooling(x):
@@ -109,7 +109,6 @@ def get_model_layers(model):
 
     '''
     return list(dict([(layer.name, layer) for layer in model.layers]).keys())
-
 
 
 def get_model_viewable_layers(model):

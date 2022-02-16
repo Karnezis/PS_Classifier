@@ -1,4 +1,5 @@
 from prediction import predict_amiloidosis, preprocess_amiloidosis, preprocess_sclerosis, read_imagefile, predict_sclerosis
+from gradcam.visualizer import Visualizer
 from fastapi import FastAPI
 from fastapi import UploadFile, File
 from fastapi.responses import FileResponse
@@ -51,12 +52,26 @@ async def predict_api(file: UploadFile = File(...)):
 
 @app.post("/images/")
 async def create_upload_file(file: UploadFile = File(...)):
-    return {"filename": file.filename}
+    #gradcam = Visualizer()
+    file_location = f"src/images/{file.filename}"
+    with open(file_location, "wb+") as file_object:
+        file_object.write(file.file.read())
+    '''gradcam.visualize(file_location, model, 'middle',
+                      self.visLabel, 'CAM_IMAGE_JET', self.visGuided)'''
+    return {"info": f"file '{file.filename}' saved at '{file_location}'"}
 
 
 @app.post("/return_image")
 def image_endpoint():
     return FileResponse("public\\assets\\favicon.png")
+
+
+@app.post("/upload-file/")
+async def create_upload_file(uploaded_file: UploadFile = File(...)):
+    file_location = f"src/images/{uploaded_file.filename}"
+    with open(file_location, "wb+") as file_object:
+        file_object.write(uploaded_file.file.read())
+    return {"info": f"file '{uploaded_file.filename}' saved at '{file_location}'"}
 
 
 if __name__ == "__main__":

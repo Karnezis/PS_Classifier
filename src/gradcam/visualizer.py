@@ -1,22 +1,13 @@
 # -*- coding: utf-8 -*-
 from matplotlib import pyplot as plt
-from operator import itemgetter
-import sys
-import argparse
-import os
 from PIL import Image
-import scipy.misc
-import cv2
-from django.conf import settings
-from classificador.gradcam.guided_gradcam import guided_grad_cam
-from classificador.gradcam.model import load_model, get_model_viewable_layers, get_model_nb_classes
-from classificador.gradcam.util import save_model_summary, Cam, create_folder_if_not_exists, extract_file_name
-from classificador.gradcam.image import load_image, preprocess_image, save_image
-from classificador.gradcam.gradcam import grad_cam, counterfactual_explanation
 import numpy as np
-from classificador.gradcam.deprocess import Method, create_cam_image, create_guided_cam_image, convert_to_bgr, convert_to_rgb, plot
-from keras.models import load_model as keras_load_model
-from classificador.sclerosis.sclerosis import Sclerosis
+from gradcam import gradcam as grad_cam
+from .guided_gradcam import guided_grad_cam
+from .deprocess import Method, create_cam_image, create_guided_cam_image, convert_to_bgr, plot
+from .model import load_model, get_model_viewable_layers, get_model_nb_classes
+from .util import save_model_summary, Cam, create_folder_if_not_exists, extract_file_name
+from .image import load_image, preprocess_image, save_image
 
 
 class Visualizer:
@@ -27,13 +18,13 @@ class Visualizer:
     '''Método que carrega um modelo do zero removido. 
     Os modelos já são carregados em suas classes.
     '''
-            
+
     def load_image(self, image_path):
         image = Image.open(image_path, )  # Open Image
         image = image.convert('RGB')  # Convert to RGB
         image = np.asarray(image)  # Convert to numpy array
         return image
-    
+
     def preprocess_image(self, image, size=(224, 224)):
         '''
         Preprocess Image resizing it to model's first layer shape
@@ -47,14 +38,14 @@ class Visualizer:
         image = np.array(image, dtype='float32')
         image = np.expand_dims(image, axis=0)
         return image
-    
+
     def get_model_viewable_layers(self, model):
         '''
         Get a list with model's viewable layers names
 
         '''
         return list(dict([(layer.name, layer) for layer in model.layers if len(layer.output_shape) == 4]).keys())
-    
+
     def get_model_nb_classes(self, model):
         '''
         Get number of classes from a model
@@ -71,7 +62,8 @@ class Visualizer:
         # Get model's input shape
         _, input_width, input_height, _ = self.model.layers[0].input_shape
         # 2.1 Preprocess Image
-        preprocessed_image = self.preprocess_image(image, (input_width, input_height))
+        preprocessed_image = self.preprocess_image(
+            image, (input_width, input_height))
         all_layers = self.get_model_viewable_layers(self.model)
         if layer_name == 'all':
             layers = all_layers
@@ -87,7 +79,8 @@ class Visualizer:
         predictions = self.model.predict(preprocessed_image)
         predicted_class = np.argmax(predictions)
         # 5 Label to visualize
-        nb_classes = self.get_model_nb_classes(self.model)  # 5.1 Model's number of classes
+        nb_classes = self.get_model_nb_classes(
+            self.model)  # 5.1 Model's number of classes
         if label == -1:
             class_to_visualize = predicted_class
         elif label < nb_classes and label > -1:
@@ -97,7 +90,7 @@ class Visualizer:
             return
         # 6. Choose Visualization method
         all_methods = ['CAM_IMAGE_JET', 'CAM_IMAGE_BONE',
-                    'CAM_AS_WEIGHTS', 'JUST_CAM_JET', 'JUST_CAM_BONE']
+                       'CAM_AS_WEIGHTS', 'JUST_CAM_JET', 'JUST_CAM_BONE']
         if method_name in all_methods:
             method = Method[method_name]
         elif guided:
@@ -111,7 +104,8 @@ class Visualizer:
         for layer_to_visualize in layers:
             # 8.1 Get cam
             model = self.model
-            cam = grad_cam(model, preprocessed_image, class_to_visualize, layer_to_visualize, nb_classes)
+            cam = grad_cam(model, preprocessed_image,
+                           class_to_visualize, layer_to_visualize, nb_classes)
 
             # 8.2 Generate visualization
             if guided:
@@ -125,14 +119,15 @@ class Visualizer:
                             layer=layer_to_visualize, method=method_name, file_name=image_file))
 
         cams.insert(0, Cam(image=convert_to_bgr(image), target=class_to_visualize,
-                        layer='Original', method=method_name, file_name=image_file))
-                
-        plot(cams, image_file)  # Vai plotar a imagem da visualização de cada layer.
+                           layer='Original', method=method_name, file_name=image_file))
+
+        # Vai plotar a imagem da visualização de cada layer.
+        plot(cams, image_file)
         # Salva a imagem no servidor, com o caminho completo.
-        plt.savefig(settings.MEDIA_ROOT+'/view-'+extract_file_name(image_file)+'.png')
+        plt.savefig('../images'+'/view-'+extract_file_name(image_file)+'.png')
         plt.clf()  # Desaloca o espaço da imagem da memória.
         # Faz o caminho simplificado de onde a imagem será salva, que o servidor usa para plotar no front.
-        path_view = settings.MEDIA_URL+'view-'+extract_file_name(image_file)+'.png'
-        # print(path_view)  # Debug.
+        path_view = '../images'+'view-'+extract_file_name(image_file)+'.png'
+        print(path_view)  # Debug.
         # Retorna o caminho onde o arquivo foi salvo para que o servidor coloque na página.
         return path_view
