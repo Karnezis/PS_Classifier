@@ -1,23 +1,45 @@
 # -*- coding: utf-8 -*-
+from operator import mod
 from matplotlib import pyplot as plt
 from PIL import Image
 import numpy as np
-from gradcam import gradcam as grad_cam
+from .gradcam import grad_cam
 from .guided_gradcam import guided_grad_cam
 from .deprocess import Method, create_cam_image, create_guided_cam_image, convert_to_bgr, plot
 from .model import load_model, get_model_viewable_layers, get_model_nb_classes
 from .util import save_model_summary, Cam, create_folder_if_not_exists, extract_file_name
 from .image import load_image, preprocess_image, save_image
+from tensorflow.keras.models import Model
+import keras
+from keras.models import model_from_json
 
 
 class Visualizer:
 
     def __init__(self):
         self.layer_name = 'ALL'
+        self.amiloidosis_model, self.sclerosis_model, self.hiper_model = self.load_models()
 
-    '''Método que carrega um modelo do zero removido. 
-    Os modelos já são carregados em suas classes.
-    '''
+    def load_models(self):
+        # ------------- Amiloidose ------------------------------------------------
+        # Defina aqui o caminho para o modelo a ser carregado
+        amiloidosis_model_path = 'src/model/ResNet50Amiloidosis_5.h5'
+        # Carrega os pesos do modelo para uma variável auxiliar
+        load_aux = keras.models.load_model(amiloidosis_model_path)
+        # Instancia um modelo com os pesos da auxiliar e camada de saída indicada
+        amiloidosis_model = Model(
+            inputs=load_aux.inputs, outputs=load_aux.outputs)
+        # ------------- Esclerose -------------------------------------------------
+        arquivo = open('src/model/sclerosis-model.json', 'r')
+        estrutura_rede = arquivo.read()
+        arquivo.close()
+        sclerosis_model = model_from_json(estrutura_rede)
+        sclerosis_model.load_weights('src/model/sclerosis-weights.h5')
+        # ------------- Hipercelularidade -----------------------------------------
+        hiper_model = keras.models.load_model(
+            'src/model/hiper-bestModel', compile=False)
+        hiper_model.load_weights('src/model/hiper-bestModel')
+        return amiloidosis_model, sclerosis_model, hiper_model
 
     def load_image(self, image_path):
         image = Image.open(image_path, )  # Open Image
@@ -53,9 +75,14 @@ class Visualizer:
         '''
         return self.model.layers[-1].output_shape[1]
 
-    def visualize(self, image_file, model_file, layer_name, label, method_name, guided):
+    def visualize(self, image_file, model_opt, layer_name, label, method_name, guided):
         self.image_file = image_file
-        self.model = model_file
+        if (model_opt == 1):
+            self.model = self.amiloidosis_model
+        elif (model_opt == 2):
+            self.model = self.sclerosis_model
+        else:
+            self.model = self.hiper_model
         # 2. Load image
         image = self.load_image(image_file)
         height, width, _ = image.shape
