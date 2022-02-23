@@ -89,7 +89,7 @@ async def create_upload_file(file: UploadFile = File(...)):
 
 @app.post("/return_image")
 def image_endpoint():
-    return FileResponse("public\\assets\\favicon.png")
+    return {"file": "FileResponse(\"public\\\\assets\\\\favicon.png\")"}
 
 
 @app.post("/upload-file/")

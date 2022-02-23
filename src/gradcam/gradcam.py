@@ -3,6 +3,7 @@ from keras.models import Model
 from keras.layers.core import Lambda
 import tensorflow as tf
 import numpy as np
+tf.compat.v1.disable_eager_execution()
 
 
 def target_category_loss(x, category_index, nb_classes):

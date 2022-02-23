@@ -2,6 +2,7 @@
 from operator import mod
 from matplotlib import pyplot as plt
 from PIL import Image
+import os
 import numpy as np
 from .gradcam import grad_cam
 from .guided_gradcam import guided_grad_cam
@@ -150,11 +151,13 @@ class Visualizer:
 
         # Vai plotar a imagem da visualização de cada layer.
         plot(cams, image_file)
-        # Salva a imagem no servidor, com o caminho completo.
-        plt.savefig('../images'+'/view-'+extract_file_name(image_file)+'.png')
-        plt.clf()  # Desaloca o espaço da imagem da memória.
         # Faz o caminho simplificado de onde a imagem será salva, que o servidor usa para plotar no front.
-        path_view = '../images'+'view-'+extract_file_name(image_file)+'.png'
-        print(path_view)  # Debug.
+        fname = extract_file_name(image_file)+'.png'
+        path_view = os.path.join(os.path.dirname(
+            __file__), '..', 'images', str(fname))
+        # Salva a imagem no servidor, com o caminho completo.
+        plt.savefig(path_view)
+        plt.clf()  # Desaloca o espaço da imagem da memória.
+        # print(path_view)  # Debug.
         # Retorna o caminho onde o arquivo foi salvo para que o servidor coloque na página.
         return path_view
