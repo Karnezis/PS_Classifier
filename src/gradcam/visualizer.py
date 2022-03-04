@@ -3,6 +3,7 @@ from operator import mod
 from matplotlib import pyplot as plt
 from PIL import Image
 import os
+import io
 import numpy as np
 from .gradcam import grad_cam
 from .guided_gradcam import guided_grad_cam
@@ -88,7 +89,10 @@ class Visualizer:
         image = self.load_image(image_file)
         height, width, _ = image.shape
         # Get model's input shape
-        _, input_width, input_height, _ = self.model.layers[0].input_shape
+        if (model_opt != 1):
+            _, input_width, input_height, _ = self.model.layers[0].input_shape
+        else:
+            input_width = input_height = 299
         # 2.1 Preprocess Image
         preprocessed_image = self.preprocess_image(
             image, (input_width, input_height))
@@ -156,8 +160,9 @@ class Visualizer:
         path_view = os.path.join(os.path.dirname(
             __file__), '..', 'images', str(fname))
         # Salva a imagem no servidor, com o caminho completo.
-        plt.savefig(path_view)
+        bio = io.BytesIO()
+        plt.savefig(bio, format="png")
         plt.clf()  # Desaloca o espaço da imagem da memória.
         # print(path_view)  # Debug.
         # Retorna o caminho onde o arquivo foi salvo para que o servidor coloque na página.
-        return path_view
+        return bio

@@ -10,6 +10,7 @@ import requests
 import json
 import uvicorn
 from PIL import Image
+from starlette.responses import Response
 
 app = FastAPI()
 
@@ -63,16 +64,16 @@ async def predict_api(file: UploadFile = File(...)):
     else:
         retorno_s = "Sem esclerose."
     myuuid = uuid.uuid4()
-    if(len(views) > 1):
+    '''if(len(views) > 1):
         im1 = Image.open(views[0])
         im2 = Image.open(views[1])
         view_location = f"src/images/{myuuid}{file.filename}-view"
         Image.blend(im1, im2, 0.5).save(view_location)
         retorno_v = view_location
     else:
-        retorno_v = views[0]
-    retorno = retorno_a + retorno_v + retorno_s
-    return retorno
+        retorno_v = views[0]'''
+    retorno = {"Amiloidose": retorno_a, "Esclerose": retorno_s}
+    return Response(content=fp_view.getvalue(), headers=retorno, media_type="image/png")
 
 
 @app.post("/images/")
