@@ -114,5 +114,4 @@ dmypy.json
 .pyre/
 
 # Exceptions
-src/model/*
 src/images/*
