@@ -117,4 +117,4 @@ def get_text(image_list, url):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=8080, host='localhost')
+    uvicorn.run(app, port=8389, host='localhost')
