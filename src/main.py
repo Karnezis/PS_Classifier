@@ -1,6 +1,7 @@
+from starlette.requests import Request
 from prediction import predict_amiloidosis, preprocess_amiloidosis, preprocess_sclerosis, read_imagefile, predict_sclerosis
 from gradcam.visualizer import Visualizer
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi import UploadFile, File
 from fastapi.responses import FileResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -12,7 +13,12 @@ import uvicorn
 from PIL import Image
 from starlette.responses import Response
 
-app = FastAPI()
+app = FastAPI(
+    title="PathoSpotter",
+    root_path="/api/ps",
+    version="0.1.0",
+    docs_url=None, redoc_url=None, openapi_url=None
+)
 
 app.add_middleware(
     CORSMiddleware,
