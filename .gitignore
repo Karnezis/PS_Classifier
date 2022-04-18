@@ -115,3 +115,7 @@ dmypy.json
 
 # Exceptions
 src/images/*
+
+# SSH
+[url "ssh://git@github.com/"]
+  insteadOf = https://github.com/
