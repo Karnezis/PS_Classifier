@@ -13,12 +13,7 @@ import uvicorn
 from PIL import Image
 from starlette.responses import Response
 
-app = FastAPI(
-    title="PathoSpotter",
-    root_path="/api/ps",
-    version="0.1.0",
-    docs_url=None, redoc_url=None, openapi_url=None
-)
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -78,7 +73,8 @@ async def predict_api(file: UploadFile = File(...)):
         retorno_v = view_location
     else:
         retorno_v = views[0]'''
-    retorno = {"Amiloidose": retorno_a, "Esclerose": retorno_s}
+    retorno = {"Amiloidose": retorno_a, "Esclerose": retorno_s,
+               "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
     return Response(content=fp_view.getvalue(), headers=retorno, media_type="image/png")
 
 

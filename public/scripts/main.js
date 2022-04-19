@@ -1,5 +1,5 @@
 function init() {
-  url = "http://localhost:8080";
+  url = "http://pathospotter.uefs.br/try_pathospotter";
   axios.get(url).then((response) => console.log(response.data));
   sendImage();
 }
@@ -12,7 +12,7 @@ function sendImage() {
       let formData = new FormData();
       formData.append("file", document.getElementById("img").files[0]);
       let submit = url + "api/predict";
-      let response = await axios.post("http://localhost:8080/api/predict", formData);
+      let response = await axios.post("http://pathospotter.uefs.br/try_pathospotter/api/predict", formData);
       await console.log(response.data);
     };
   };
