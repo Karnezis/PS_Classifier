@@ -59,9 +59,9 @@ async def predict_api(file: UploadFile = File(...)):
         retorno_a = "Sem amiloidose."
     if sclerosis_prediction[0][0] > 0.5:
         retorno_s = "Esclerose."
-        fp_view = gradcam.visualize(
+        '''fp_view = gradcam.visualize(
             file_location, 2, 'middle', -1, 'CAM_IMAGE_JET', False)
-        views.append(fp_view)
+        views.append(fp_view)'''
     else:
         retorno_s = "Sem esclerose."
     myuuid = uuid.uuid4()
@@ -73,9 +73,11 @@ async def predict_api(file: UploadFile = File(...)):
         retorno_v = view_location
     else:
         retorno_v = views[0]'''
-    retorno = {"Amiloidose": retorno_a, "Esclerose": retorno_s,
+    '''retorno = {"Amiloidose": retorno_a, "Esclerose": retorno_s,
                "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
-    return Response(content=fp_view.getvalue(), headers=retorno, media_type="image/png")
+    return Response(content=fp_view.getvalue(), headers=retorno, media_type="image/png")'''
+    return {"Amiloidose": retorno_a, "Esclerose": retorno_s,
+            "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
 
 
 @app.post("/images/")
