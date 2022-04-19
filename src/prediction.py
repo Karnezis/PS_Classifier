@@ -58,6 +58,19 @@ def preprocess_sclerosis(image: Image.Image):
     return pre_processed_array
 
 
+def preprocess_hiper(image: Image.Image):
+    """Load and preprocess image."""
+    # Redimensiona a imagem
+    image = np.asarray(image.resize((224, 224)))[..., :3]
+    # Normaliza o array para a rede conforme sua necessidade
+    img = image/255.
+    # Transforma em float
+    img = np.array(img, dtype='float32')
+    # Coloca mais uma dimensão no array
+    pre_processed_array = np.expand_dims(img, axis=0)
+    return pre_processed_array
+
+
 def predict_amiloidosis(processed_array: np.ndarray):
     # Prevê o array com a rede instanciada
     predicted_rate = amiloidosis_model.predict(processed_array)
@@ -68,6 +81,14 @@ def predict_sclerosis(processed_array: np.ndarray):
     # Prevê o array com a rede instanciada
     predicted_rate = sclerosis_model.predict(processed_array)
     return predicted_rate
+
+
+def predict_hiper(processed_array: np.ndarray):
+    # Prevê o array com a rede instanciada
+    predicted_class = hiper_model.predict(processed_array)
+    # Pega o número da classe com maior probabilidade
+    predicted_class_n = np.argmax(predicted_class)
+    return predicted_class_n
 
 
 def visualizer(self, imagePath, model):

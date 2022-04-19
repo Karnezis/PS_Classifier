@@ -1,5 +1,5 @@
 from starlette.requests import Request
-from prediction import predict_amiloidosis, preprocess_amiloidosis, preprocess_sclerosis, read_imagefile, predict_sclerosis
+from prediction import predict_amiloidosis, preprocess_amiloidosis, preprocess_sclerosis, read_imagefile, predict_sclerosis, preprocess_hiper, predict_hiper
 from gradcam.visualizer import Visualizer
 from fastapi import Depends, FastAPI
 from fastapi import UploadFile, File
@@ -49,6 +49,8 @@ async def predict_api(file: UploadFile = File(...)):
     amiloidosis_prediction = predict_amiloidosis(amiloidosis_array)
     sclerosis_array = preprocess_sclerosis(image)
     sclerosis_prediction = predict_sclerosis(sclerosis_array)
+    hiper_array = preprocess_hiper(image)
+    hiper_prediction = predict_hiper(hiper_array)
     views = []
     if amiloidosis_prediction[0][0] > 0.5:
         retorno_a = "Amiloidose."
@@ -64,6 +66,14 @@ async def predict_api(file: UploadFile = File(...)):
         views.append(fp_view)'''
     else:
         retorno_s = "Sem esclerose."
+    if hiper_prediction == 1:
+        retorno_h = 'Endocapilar e mesangial.'
+    elif hiper_prediction == 2:
+        retorno_h = 'Mesangial.'
+    elif hiper_prediction == 3:
+        retorno_h = 'Endocapilar'
+    else:
+        retorno_h = 'No'
     myuuid = uuid.uuid4()
     '''if(len(views) > 1):
         im1 = Image.open(views[0])
@@ -76,7 +86,7 @@ async def predict_api(file: UploadFile = File(...)):
     '''retorno = {"Amiloidose": retorno_a, "Esclerose": retorno_s,
                "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
     return Response(content=fp_view.getvalue(), headers=retorno, media_type="image/png")'''
-    return {"Amiloidose": retorno_a, "Esclerose": retorno_s,
+    return {"Amiloidose": retorno_a, "Esclerose": retorno_s, "Hipercelularidade": retorno_h,
             "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
 
 
