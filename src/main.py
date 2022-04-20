@@ -10,6 +10,7 @@ import uuid
 import requests
 import json
 import uvicorn
+import time
 from PIL import Image
 from starlette.responses import Response
 
@@ -36,11 +37,11 @@ async def hello_world(name: str):
 
 @app.post('/api/predict')
 async def predict_api(file: UploadFile = File(...)):
-    print("Requisition beginning.")
+    start_time = time.time()
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
         return "Image must be jpg or png format!"
-    gradcam = Visualizer()
+    #gradcam = Visualizer()
     myuuid = uuid.uuid4()
     file_location = f"src/images/{myuuid}{file.filename}"
     with open(file_location, "wb+") as file_object:
@@ -52,7 +53,7 @@ async def predict_api(file: UploadFile = File(...)):
     sclerosis_prediction = predict_sclerosis(sclerosis_array)
     hiper_array = preprocess_hiper(image)
     hiper_prediction = predict_hiper(hiper_array)
-    views = []
+    #views = []
     if amiloidosis_prediction[0][0] > 0.5:
         retorno_a = "Amiloidose."
         '''fp_view = gradcam.visualize(
@@ -87,8 +88,9 @@ async def predict_api(file: UploadFile = File(...)):
     '''retorno = {"Amiloidose": retorno_a, "Esclerose": retorno_s,
                "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
     return Response(content=fp_view.getvalue(), headers=retorno, media_type="image/png")'''
-    print("Requisition end.")
+    print("--- %s seconds ---" % (time.time() - start_time))
     return {"Amiloidose": retorno_a, "Esclerose": retorno_s, "Hipercelularidade": retorno_h,
+            "File": file.filename, "Time": "--- %s seconds ---" % (time.time() - start_time),
             "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
 
 
