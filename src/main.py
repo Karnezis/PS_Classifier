@@ -36,6 +36,7 @@ async def hello_world(name: str):
 
 @app.post('/api/predict')
 async def predict_api(file: UploadFile = File(...)):
+    print("Requisition beginning.")
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
         return "Image must be jpg or png format!"
@@ -86,6 +87,7 @@ async def predict_api(file: UploadFile = File(...)):
     '''retorno = {"Amiloidose": retorno_a, "Esclerose": retorno_s,
                "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
     return Response(content=fp_view.getvalue(), headers=retorno, media_type="image/png")'''
+    print("Requisition end.")
     return {"Amiloidose": retorno_a, "Esclerose": retorno_s, "Hipercelularidade": retorno_h,
             "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
 
