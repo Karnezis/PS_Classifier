@@ -86,7 +86,7 @@ async def predict_api(file: UploadFile = File(...)):
     else:
         retorno_h = 'No'
     myuuid = uuid.uuid4()
-    if(len(views) > 1):
+    '''if(len(views) > 1):
         im1 = Image.open(views[0])
         im2 = Image.open(views[1])
         view_location = f"src/images/{myuuid}-view.png"
@@ -94,14 +94,13 @@ async def predict_api(file: UploadFile = File(...)):
         retorno_v = view_location
         with open(retorno_v, 'rb') as fh:
             buf = io.BytesIO(fh.read())
-    else:
-        retorno_v = views[0]
-        with open(retorno_v, 'rb') as fh:
-            buf = io.BytesIO(fh.read())
+    else:'''
+    retorno_v = views[0]
     retorno = {"Esclerose": retorno_s, "Hipercelularidade": retorno_h,
+               "File": file.filename, "Time": "--- %s seconds ---" % (time.time() - start_time),
                "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
     print("--- %s seconds ---" % (time.time() - start_time))
-    return Response(content=buf.getvalue(), headers=retorno, media_type="image/png")
+    return Response(content=retorno_v.getvalue(), headers=retorno, media_type="image/png")
     '''return {"Amiloidose": retorno_a, "Esclerose": retorno_s, "Hipercelularidade": retorno_h,
             "File": file.filename, "Time": "--- %s seconds ---" % (time.time() - start_time),
             "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}'''
