@@ -95,15 +95,15 @@ async def predict_api(file: UploadFile = File(...)):
         with open(retorno_v, 'rb') as fh:
             buf = io.BytesIO(fh.read())
     else:'''
-    retorno_v = views[0]
+    '''retorno_v = views[0]
     retorno = {"Esclerose": retorno_s, "Hipercelularidade": retorno_h,
                "File": file.filename, "Time": "--- %s seconds ---" % (time.time() - start_time),
                "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
     print("--- %s seconds ---" % (time.time() - start_time))
-    return Response(content=retorno_v.getvalue(), headers=retorno, media_type="image/png")
-    '''return {"Amiloidose": retorno_a, "Esclerose": retorno_s, "Hipercelularidade": retorno_h,
+    return Response(content=retorno_v.getvalue(), headers=retorno, media_type="image/png")'''
+    return {"Esclerose": retorno_s, "Hipercelularidade": retorno_h,
             "File": file.filename, "Time": "--- %s seconds ---" % (time.time() - start_time),
-            "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}'''
+            "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"}
 
 
 @app.post("/images/")
