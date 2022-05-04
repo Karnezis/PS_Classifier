@@ -10,13 +10,13 @@ from gradcam.visualizer import Visualizer
 
 def load_models():
     keras.backend.clear_session()
-    '''# ------------- Amiloidose ------------------------------------------------
+    # ------------- Amiloidose ------------------------------------------------
     # Defina aqui o caminho para o modelo a ser carregado
     amiloidosis_model_path = 'src/model/ResNet50Amiloidosis_5.h5'
     # Carrega os pesos do modelo para uma variável auxiliar
     load_aux = keras.models.load_model(amiloidosis_model_path)
     # Instancia um modelo com os pesos da auxiliar e camada de saída indicada
-    amiloidosis_model = Model(inputs=load_aux.inputs, outputs=load_aux.outputs)'''
+    amiloidosis_model = Model(inputs=load_aux.inputs, outputs=load_aux.outputs)
     # ------------- Esclerose -------------------------------------------------
     arquivo = open('src/model/sclerosis-model.json', 'r')
     estrutura_rede = arquivo.read()
