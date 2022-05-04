@@ -10,13 +10,13 @@ from gradcam.visualizer import Visualizer
 
 def load_models():
     keras.backend.clear_session()
-    # ------------- Amiloidose ------------------------------------------------
+    '''# ------------- Amiloidose ------------------------------------------------
     # Defina aqui o caminho para o modelo a ser carregado
     amiloidosis_model_path = 'src/model/ResNet50Amiloidosis_5.h5'
     # Carrega os pesos do modelo para uma variável auxiliar
     load_aux = keras.models.load_model(amiloidosis_model_path)
     # Instancia um modelo com os pesos da auxiliar e camada de saída indicada
-    amiloidosis_model = Model(inputs=load_aux.inputs, outputs=load_aux.outputs)
+    amiloidosis_model = Model(inputs=load_aux.inputs, outputs=load_aux.outputs)'''
     # ------------- Esclerose -------------------------------------------------
     arquivo = open('src/model/sclerosis-model.json', 'r')
     estrutura_rede = arquivo.read()
@@ -27,10 +27,12 @@ def load_models():
     hiper_model = keras.models.load_model(
         'src/model/hiper-bestModel', compile=False)
     hiper_model.load_weights('src/model/hiper-bestModel')
-    return amiloidosis_model, sclerosis_model, hiper_model
+    # return amiloidosis_model, sclerosis_model, hiper_model
+    return sclerosis_model, hiper_model
 
 
-amiloidosis_model, sclerosis_model, hiper_model = load_models()
+#amiloidosis_model, sclerosis_model, hiper_model = load_models()
+sclerosis_model, hiper_model = load_models()
 
 
 def read_imagefile(file):
@@ -38,7 +40,7 @@ def read_imagefile(file):
     return image
 
 
-def preprocess_amiloidosis(image: Image.Image):
+'''def preprocess_amiloidosis(image: Image.Image):
     # Redimensiona a imagem
     image = np.asarray(image.resize((299, 299)))[..., :3]
     # Coloca mais uma dimensão no array
@@ -46,7 +48,7 @@ def preprocess_amiloidosis(image: Image.Image):
     # Normaliza o array para a rede conforme sua necessidade
     pre_processed_array = tf.keras.applications.resnet50.preprocess_input(
         input_arr)
-    return pre_processed_array
+    return pre_processed_array'''
 
 
 def preprocess_sclerosis(image: Image.Image):
@@ -72,10 +74,10 @@ def preprocess_hiper(image: Image.Image):
     return pre_processed_array
 
 
-def predict_amiloidosis(processed_array: np.ndarray):
+'''def predict_amiloidosis(processed_array: np.ndarray):
     # Prevê o array com a rede instanciada
     predicted_rate = amiloidosis_model.predict(processed_array)
-    return predicted_rate
+    return predicted_rate'''
 
 
 def predict_sclerosis(processed_array: np.ndarray):

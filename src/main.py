@@ -1,5 +1,6 @@
 from starlette.requests import Request
-from prediction import predict_amiloidosis, preprocess_amiloidosis, preprocess_sclerosis, read_imagefile, predict_sclerosis, preprocess_hiper, predict_hiper
+#from prediction import predict_amiloidosis, preprocess_amiloidosis, preprocess_sclerosis, read_imagefile, predict_sclerosis, preprocess_hiper, predict_hiper
+from prediction import preprocess_sclerosis, read_imagefile, predict_sclerosis, preprocess_hiper, predict_hiper
 from gradcam.visualizer import Visualizer
 from fastapi import Depends, FastAPI
 from fastapi import UploadFile, File
