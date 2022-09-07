@@ -115,6 +115,7 @@ dmypy.json
 
 # Exceptions
 src/images/*
+src/model/*
 
 # SSH
 [url "ssh://git@github.com/"]
