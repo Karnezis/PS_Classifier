@@ -84,7 +84,7 @@ First, upload an image to the system. Then, click the button to submit it. Now w
 
 ## Tips
 
-Empty (for now).
+If you want to know more about this project, contact the authors to read the unpublished bachelor thesis in which this project is tested in latency, security, and maintainability.
 
 ## Contributing
 
